@@ -1,0 +1,182 @@
+<div class="container bg-light p-3 mt-3 rounded shadow-sm">
+  <h2 class="text-center mb-3">Welcome to awesome weather app</h2>
+  <div class="text-center d-flex justify-content-center">
+    <form [formGroup]="weatherSearchForm" (ngSubmit)="onFetch()">
+      <div class="input-group mb-2">
+        <input
+          type="text"
+          class="form-control"
+          placeholder="Recipient's username"
+          aria-label="Recipient's username"
+          aria-describedby="button-addon2"
+          id="cityId"
+          formControlName="city"
+          placeholder="Please insert the city name"
+        />
+      </div>
+      <button
+        class="btn btn-dark w-100"
+        type="submit"
+        id="button-addon2"
+        [disabled]="
+          weatherSearchForm.value.city === null ||
+          weatherSearchForm.value.city === ''
+        "
+      >
+        Search
+      </button>
+    </form>
+  </div>
+
+  <ng-template #emptyCase></ng-template>
+  <ng-template #errorCase>
+    <ng-container
+      *ngIf="this.weatherData.status == 'fail'; else emptyCase"
+    ></ng-container>
+    <p class="h3 mt-3 text-danger text-center">{{ weatherData.error }}</p>
+  </ng-template>
+
+  <div
+    class="row ps-5 pe-5 mt-3"
+    *ngIf="this.weatherData.status == 'success'; else errorCase"
+  >
+    <h3 class="text-center text-decoration-underline">
+      {{ this.weatherData.data?.city }}, {{ this.weatherData.data?.country }}
+    </h3>
+    <span class="text-center">
+      {{ unixToDate(this.weatherData.data?.time) | date: "MMM d, y" }}
+    </span>
+    <hr class="mb-3 mt-3" />
+    <div class="border-end col-md-6 animate-right text-center">
+      <span class="fst-italic text-muted">Temperature:</span>
+      <h3 class="mt-2">
+        {{ this.weatherData.data?.temp | number: "1.0-0" }} &#8451;
+      </h3>
+      <span class="text-muted"
+        >Description: {{ this.weatherData.data?.description }}</span
+      >
+    </div>
+    <div class="col-md-6 d-flex justify-content-center animate-left">
+      <div class="weatherData">
+        <ul class="list-group list-group-horizontal bg-transparent">
+          <li class="list-group-item bg-transparent border-0 text-muted">
+            <span class="fw-bold fs-5 text-dark"
+              >{{ this.weatherData.data?.max | number: "1.0-0" }}&#176;</span
+            >
+            <br />High
+          </li>
+          <li class="list-group-item bg-transparent border-0 text-muted">
+            <span class="fw-bold fs-5 text-dark"
+              >{{ this.weatherData.data?.wind }}m/s</span
+            >
+            <br />Wind
+          </li>
+          <li class="list-group-item bg-transparent border-0 text-muted">
+            <span class="fw-bold fs-5 text-dark">{{
+              this.weatherData.data?.sunrise | date: "HH:mm"
+            }}</span>
+            <br />Sunrise
+          </li>
+        </ul>
+        <hr />
+        <ul class="list-group list-group-horizontal bg-transparent">
+          <li class="list-group-item bg-transparent border-0 text-muted">
+            <span class="fw-bold fs-5 text-dark"
+              >{{ this.weatherData.data?.min | number: "1.0-0" }}&#176;</span
+            >
+            <br />Low
+          </li>
+          <li class="list-group-item bg-transparent border-0 text-muted">
+            <span class="fw-bold fs-5 text-dark"
+              >{{
+                this.weatherData.data?.feels_like | number: "1.0-0"
+              }}&#176;</span
+            >
+            <br />Feels like
+          </li>
+          <li class="list-group-item bg-transparent border-0 text-muted">
+            <span class="fw-bold fs-5 text-dark">{{
+              this.weatherData.data?.sunset | date: "HH:mm"
+            }}</span>
+            <br />Sunset
+          </li>
+        </ul>
+      </div>
+    </div>
+
+    <hr class="mt-4" />
+    <div class="col-md- mt-4 animate-top">
+      <p class="fs-5 text-muted">5 Day Forecast</p>
+      <div
+        class="forecastData"
+        *ngIf="!forecastData.error; else forecastErrorMessage"
+      >
+        <table class="table" id="table">
+          <thead>
+            <tr>
+              <th class="h-pointer" (click)="sort()" scope="col">
+                Days
+                <img
+                  width="20"
+                  height="20"
+                  src="../../assets/icons/sort-solid.svg"
+                  alt=""
+                />
+              </th>
+              <th scope="col">00:00</th>
+              <th scope="col">03:00</th>
+              <th scope="col">06:00</th>
+              <th scope="col">09:00</th>
+              <th scope="col">12:00</th>
+              <th scope="col">15:00</th>
+              <th scope="col">18:00</th>
+              <th scope="col">21:00</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- For begin -->
+            <tr class="lh-lg" *ngFor="let day of setOfDays">
+              <th scope="row">
+                {{ stringToDate(day) }}
+              </th>
+              <td>
+                {{ mapToTemp(day, "00:00:00") | number: "1.0-0" }} &#8451;
+              </td>
+              <td>
+                {{ mapToTemp(day, "03:00:00") | number: "1.0-0" }} &#8451;
+              </td>
+              <td>
+                {{ mapToTemp(day, "06:00:00") | number: "1.0-0" }} &#8451;
+              </td>
+              <td>
+                {{ mapToTemp(day, "09:00:00") | number: "1.0-0" }} &#8451;
+              </td>
+              <td>
+                {{ mapToTemp(day, "12:00:00") | number: "1.0-0" }} &#8451;
+              </td>
+              <td>
+                {{ mapToTemp(day, "15:00:00") | number: "1.0-0" }} &#8451;
+              </td>
+              <td>
+                {{ mapToTemp(day, "18:00:00") | number: "1.0-0" }} &#8451;
+              </td>
+              <td>
+                {{ mapToTemp(day, "21:00:00") | number: "1.0-0" }} &#8451;
+              </td>
+            </tr>
+            <!--  for end -->
+          </tbody>
+        </table>
+      </div>
+      <ng-template #forecastErrorMessage>
+        <p class="text-center">{{ forecastData.error }}</p>
+      </ng-template>
+    </div>
+  </div>
+  <p class="text-center mt-4">
+    &copy; Copyright by
+    <a href="https://www.linkedin.com/in/orkhan-huseynov6/" target="_blank">
+      Orkhan Huseynov</a
+    >
+  </p>
+</div>

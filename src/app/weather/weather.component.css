@@ -1,0 +1,50 @@
+.container:hover,
+.btn-dark:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+.animate-right {
+  animation-name: animateToRight;
+  animation-duration: 1.2s;
+  position: relative;
+}
+
+.animate-left {
+  animation-name: animateToLeft;
+  animation-duration: 1.2s;
+  position: relative;
+}
+.animate-top {
+  animation-name: animateToTop;
+  animation-duration: 1.2s;
+  position: relative;
+}
+@keyframes animateToRight {
+  0% {
+    left: -100px;
+  }
+  100% {
+    left: 0;
+  }
+}
+
+@keyframes animateToLeft {
+  0% {
+    right: -100px;
+  }
+  100% {
+    right: 0;
+  }
+}
+
+@keyframes animateToTop {
+  0% {
+    bottom: -100px;
+  }
+  100% {
+    bottom: 0;
+  }
+}
+
+.h-pointer {
+  cursor: pointer;
+}
